@@ -1,0 +1,460 @@
+basePath: /api/v1
+definitions:
+  dto.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  dto.SubTodoDeleteResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.SubTodoEntityModel'
+    type: object
+  dto.SubTodoGetDetail:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.SubTodoEntityModel'
+    type: object
+  dto.SubTodoGetResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/models.SubTodoEntityModel'
+        type: array
+    type: object
+  dto.SubTodoPostResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.SubTodoEntityModel'
+    type: object
+  dto.SubTodoUpdateResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.SubTodoEntityModel'
+    type: object
+  dto.TodoResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/models.TodoEntityModel'
+        type: array
+    type: object
+  dto.TodoResponseDeletet:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.TodoEntityModel'
+    type: object
+  dto.TodoResponseDetail:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.TodoEntityModel'
+    type: object
+  dto.TodoResponseUpdate:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/models.TodoEntityModel'
+    type: object
+  models.SubTodoEntityModel:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      files:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      list_id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  models.TodoEntityModel:
+    properties:
+      created_at:
+        type: string
+      description:
+        maxLength: 100
+        minLength: 5
+        type: string
+      files:
+        items:
+          type: string
+        type: array
+      id:
+        type: string
+      sublist:
+        items:
+          $ref: '#/definitions/models.SubTodoEntityModel'
+        type: array
+      title:
+        maxLength: 100
+        minLength: 5
+        type: string
+      updated_at:
+        type: string
+    required:
+    - description
+    - title
+    type: object
+host: localhost:3005
+info:
+  contact:
+    email: hasaelbutarbutar80@gmail.com
+    name: Hasael Butar Butar
+  description: API endpoint Todo List App.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  version: "1.0"
+paths:
+  /todo/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Files
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.TodoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: create new todo list
+      tags:
+      - TODO LIST
+  /todo/list/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TodoResponseDetail'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Detail Todo
+      tags:
+      - TODO LIST
+  /todo/list/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TodoResponseDeletet'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete todo list by id list
+      tags:
+      - TODO LIST
+  /todo/list/update/{id}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Files
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TodoResponseUpdate'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update todo list by id todo
+      tags:
+      - TODO LIST
+  /todo/lists:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Page number for pagination (default is 1)
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page (default is 10)
+        in: query
+        name: page_size
+        type: integer
+      - description: Search by title (case-insensitive)
+        in: query
+        name: title
+        type: string
+      - description: Search by description (case-insensitive)
+        in: query
+        name: description
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.TodoResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: All Todo List
+      tags:
+      - TODO LIST
+  /todo/sublist:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Files
+        in: formData
+        name: files
+        required: true
+        type: file
+      - description: List ID
+        in: formData
+        name: listid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.SubTodoPostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Add sub lists to the todo list
+      tags:
+      - SUB TODO LIST
+  /todo/sublist/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Sub Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SubTodoDeleteResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Delete sub todo list
+      tags:
+      - SUB TODO LIST
+  /todo/sublist/update/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Sub Todo List ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SubTodoGetDetail'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Detail Sub Todo
+      tags:
+      - SUB TODO LIST
+    patch:
+      consumes:
+      - application/json
+      description: update sub todo list
+      parameters:
+      - description: Sub Todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        required: true
+        type: string
+      - description: Files
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SubTodoUpdateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Update sub todo list by id sub todo
+      tags:
+      - SUB TODO LIST
+  /todo/sublists/{list_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: List id
+        in: path
+        name: list_id
+        required: true
+        type: string
+      - description: Page number for pagination (default is 1)
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page (default is 10)
+        in: query
+        name: page_size
+        type: integer
+      - description: Search by title (case-insensitive)
+        in: query
+        name: title
+        type: string
+      - description: Search by description (case-insensitive)
+        in: query
+        name: description
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.SubTodoGetResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get All sub todo list
+      tags:
+      - SUB TODO LIST
+swagger: "2.0"
